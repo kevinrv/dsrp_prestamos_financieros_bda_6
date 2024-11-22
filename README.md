@@ -31,4 +31,5 @@ Cada préstamo debe estar vinculado a la sucursal donde fue otorgado.
 Cada sucursal tiene un código único, dirección y gerente asignado.
 
 ## Modelo Entidad Relación
-![MODELO CONCEPTUAL BDA 5](https://github.com/user-attachments/assets/ebe004fd-7fca-4770-83a8-d0935fa93ade)
+![MODELO CONCEPTUAL BDA 5](https://github.com/user-attachments/assets/f4d51269-3d2b-49ee-8a93-589c62586ce3)
+
