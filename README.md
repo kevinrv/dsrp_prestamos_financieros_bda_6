@@ -29,3 +29,6 @@ Se debe registrar la fecha del pago, el monto abonado y la cuota o cuotas asocia
 
 Cada préstamo debe estar vinculado a la sucursal donde fue otorgado.
 Cada sucursal tiene un código único, dirección y gerente asignado.
+
+## Modelo Entidad Relación
+![MODELO CONCEPTUAL BDA 5](https://github.com/user-attachments/assets/ebe004fd-7fca-4770-83a8-d0935fa93ade)
