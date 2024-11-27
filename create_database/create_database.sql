@@ -1,0 +1,2 @@
+CREATE DATABASE dsrp_prestamos_financieros_6;
+GO
