@@ -33,3 +33,6 @@ Cada sucursal tiene un código único, dirección y gerente asignado.
 ## Modelo Entidad Relación
 ![MODELO CONCEPTUAL BDA 5](https://github.com/user-attachments/assets/f4d51269-3d2b-49ee-8a93-589c62586ce3)
 
+## Modelo Lógico
+![dsrp_prestamos_financieros_bda_6_1](https://github.com/user-attachments/assets/a5445f8b-83d4-44fe-82b4-d5686ee75cfb)
+
