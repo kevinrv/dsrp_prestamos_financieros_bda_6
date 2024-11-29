@@ -53,7 +53,7 @@ id INT PRIMARY KEY IDENTITY(1,1),
 codigo CHAR(6) NOT NULL,
 nombres VARCHAR(100) UNIQUE NOT NULL,
 direccion VARCHAR(255) NOT NULL);
-
+GO
 -- Pagos
 
 CREATE TABLE pagos(
@@ -61,7 +61,28 @@ id INT PRIMARY KEY IDENTITY(1,1),
 codigo_operacion VARCHAR(20) NOT NULL,
 fecha_pago DATETIME DEFAULT GETDATE() NOT NULL,
 monto_abonado MONEY NOT NULL);
+GO
 
 INSERT INTO pagos(codigo_operacion,monto_abonado) VALUES('000000001',100.00);
 INSERT INTO pagos VALUES('000000002',DEFAULT,200.00);
 
+-- tipo_prestamos
+
+CREATE TABLE tipos_prestamo(
+id INT PRIMARY KEY IDENTITY(1,1),
+nombre VARCHAR(100) NOT NULL,
+descripcion TEXT NULL );
+GO
+
+-- Empleados
+
+CREATE TABLE empleados(
+id INT PRIMARY KEY IDENTITY(1,1),
+persona_id INT NOT NULL,
+codigo_empleado VARCHAR(6) NOT NULL,
+cargo VARCHAR(100) NOT NULL, 
+supervisor_id INT NULL,
+CONSTRAINT FK_persona_natural_empleados FOREIGN KEY (persona_id) REFERENCES personas_naturales(id),
+CONSTRAINT FK_supervisor_empleado FOREIGN KEY (supervisor_id) REFERENCES empleados(id)
+);
+GO
