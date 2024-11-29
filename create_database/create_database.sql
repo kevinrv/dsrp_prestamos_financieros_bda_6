@@ -32,3 +32,10 @@ CREATE TABLE personas_juridicas(
 	direccion VARCHAR (255) NOT NULL
 ); 
 GO
+
+--Clientes
+
+CREATE TABLE clientes(
+id INT PRIMARY KEY IDENTITY(1,1),
+tipo_persona VARCHAR(55) NOT NULL,
+persona_id INT NOT NULL);
