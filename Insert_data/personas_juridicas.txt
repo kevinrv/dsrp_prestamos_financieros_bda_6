@@ -1,0 +1,31 @@
+numero_documento	razon_social	email	telefono	direccion
+12345678910	JKC Tecnología e Información	jkcit@gmail.com	32165894	Huaraz-Ancash
+20100000001	Empresa Alpha S.A.	emp@gmail.com	01857687	AV. Industrial 123
+20100000002	Beta Corp.	bet@gmail.com	01857687	Calle Comercio 456
+20100000003	Gamma S.R.L.	gam@gmail.com	01857687	Av. Producción 789
+20100000004	Delta y Asociados	del@gmail.com	01857687	Calle Negocios 101
+20100000005	Epsilon Ltda.	eps@gmail.com	01857687	Av. Servicios 202
+20100000006	Zeta Consultores	zet@gmail.com	01857687	Calle Soluciones 303
+20100000007	Theta Innovaciones	the@gmail.com	01857687	Av. Proyectos 404
+20100000008	Iota Ingeniería S.A.C.	iot@gmail.com	01857687	Calle Desarrollo 505
+20100000009	Kappa Tecnología	kap@gmail.com	01857687	Av. Avances 606
+20100000010	Lambda Construcciones	lam@gmail.com	01857687	Calle Obras 707
+20100000011	Mu Financiera	mu @gmail.com	01857687	Av. Capital 808
+20100000012	Nu Servicios S.A.	nu @gmail.com	01857687	Calle Asesoría 909
+20100000013	Xi Consultoría	xi @gmail.com	01857687	Av. Estrategia 1010
+20100000014	Omicron Logística	omi@gmail.com	01857687	Calle Distribución 1111
+20100000015	Pi Internacional	pi @gmail.com	01857687	Av. Comercio Exterior 1212
+20100000016	Rho Exportaciones	rho@gmail.com	01857687	Calle Global 1313
+20100000017	Sigma Importaciones	sig@gmail.com	01857687	Av. Importadores 1414
+20100000018	Tau Energía S.A.	tau@gmail.com	01857687	Calle Recursos 1515
+20100000019	Upsilon Tecnológica	ups@gmail.com	01857687	Av. Innovación 1616
+20100000020	Phi Construcciones	phi@gmail.com	01857687	Calle Edificaciones 1717
+20100000021	Chi Industrial	chi@gmail.com	01857687	Av. Manufactura 1818
+20100000022	Psi Consultores	psi@gmail.com	01857687	Calle Planeación 1919
+20100000023	Omega Global S.A.C.	ome@gmail.com	01857687	Av. Internacional 2020
+20100000024	Alpha Soluciones	alp@gmail.com	01857687	Calle Innovación 2121
+20100000025	Beta Tech	bet@gmail.com	01857687	Av. Tecnología 2222
+20100000026	Gamma Logística	gam@gmail.com	01857687	Calle Distribución 2323
+20100000027	Delta Asesoría	del@gmail.com	01857687	Av. Negocios 2424
+20100000028	Epsilon Innovación	eps@gmail.com	01857687	Calle Futuro 2525
+20100000029	Zeta Proyectos	zet@gmail.com	01857687	Av. Emprendedores 2626
