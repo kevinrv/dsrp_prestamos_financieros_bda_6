@@ -39,3 +39,10 @@ CREATE TABLE clientes(
 id INT PRIMARY KEY IDENTITY(1,1),
 tipo_persona VARCHAR(55) NOT NULL,
 persona_id INT NOT NULL);
+Go
+
+ALTER TABLE clientes
+ADD CONSTRAINT check_tipo_persona CHECK (tipo_persona IN ('Persona Natural','Persona Jurídica'));
+
+SELECT*FROM clientes;
+INSERT INTO clientes VALUES ('Persona Natural','1');
