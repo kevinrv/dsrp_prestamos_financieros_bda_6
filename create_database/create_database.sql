@@ -116,6 +116,8 @@ CONSTRAINT FK_sucursales_prestamos FOREIGN KEY (sucursal_id) REFERENCES sucursal
 CONSTRAINT FK_empleados_prestamos FOREIGN KEY (empleado_id) REFERENCES empleados(id),
 CONSTRAINT FK_tipos_prestamo_prestamos FOREIGN KEY (tipo_prestamo_id) REFERENCES tipos_prestamo(id));
 
+ALTER TABLE prestamos
+ALTER COLUMN fecha_vencimiento DATETIME NULL;
 --cuotas
 CREATE TABLE cuotas(
 id INT PRIMARY KEY IDENTITY(1,1),

@@ -102,4 +102,54 @@ WHERE numero_documento IN ('67890123','78901234','89012345','90123456','12323456
 SELECT*FROM personas_naturales
 WHERE numero_documento NOT IN ('67890123','78901234','89012345','90123456','12323456');
 
+-- Funciones Matematicas
+
+SELECT*FROM prestamos;
+--Monto total otorgado en prestamos de la sucursal de id  1 y 10
+--SUM
+SELECT 
+	sucursal_id,
+	SUM(monto_otorgado) AS 'Monto_total_otorgado'
+FROM prestamos
+WHERE sucursal_id IN (1,10,15,11,5)
+GROUP BY sucursal_id
+ORDER BY 2 ASC;
+
+-- MAX MIN
+SELECT 
+	sucursal_id,
+	MIN(monto_otorgado) AS 'Monto_total_otorgado'
+FROM prestamos
+WHERE sucursal_id IN (1,10,15,11,5)
+GROUP BY sucursal_id
+ORDER BY 2 ASC;
+
+-- Contar
+SELECT 
+	sucursal_id,
+	COUNT(sucursal_id) AS 'Num_prestamos'
+FROM prestamos
+WHERE sucursal_id IN (1,10,15,11,5)
+GROUP BY sucursal_id
+ORDER BY 2 ASC;
+
+--HAVING
+SELECT 
+	sucursal_id,
+	COUNT(id) AS 'Num_prestamos'
+FROM prestamos
+GROUP BY sucursal_id
+HAVING COUNT(sucursal_id)>5
+ORDER BY 2 ASC;
+
+--CREATE VIEW 
+
+CREATE VIEW vw_kv_listar_personas_naturales AS
+SELECT
+	numero_documento AS 'DNI',
+	CONCAT(nombres,' ',apellido_paterno,' ',apellido_materno) AS 'Nombre Completo',
+	email 
+FROM personas_naturales;
+
+SELECT*FROM vw_kv_listar_personas_naturales;
 
