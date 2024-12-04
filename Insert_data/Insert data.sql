@@ -102,3 +102,21 @@ SELECT
 	NULL AS 'supervisor_id'
 FROM personas_naturales
 WHERE id>=50;
+
+-- Clientes
+
+SELECT*FROM personas_juridicas;
+
+INSERT INTO clientes 
+SELECT 'Persona Jurídica',id
+FROM personas_juridicas;
+
+
+SELECT*FROM personas_juridicas;
+
+INSERT INTO clientes 
+SELECT 'Persona Natural',id
+FROM personas_naturales
+WHERE id<=49;
+
+SELECT* FROM clientes;
