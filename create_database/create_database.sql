@@ -87,6 +87,12 @@ CONSTRAINT FK_supervisor_empleado FOREIGN KEY (supervisor_id) REFERENCES emplead
 );
 GO
 
+ALTER TABLE empleados
+ADD sucursal_id INT;
+
+
+ALTER TABLE empleados
+ADD CONSTRAINT fk_sucursal_empleados FOREIGN KEY (sucursal_id) REFERENCES sucursales (id);
 -- Prestamos
 CREATE TABLE prestamos(
 id INT PRIMARY KEY IDENTITY(1,1),
