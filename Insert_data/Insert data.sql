@@ -185,31 +185,29 @@ SELECT*FROM prestamos;
 
 DECLARE @Counter INT
 SET @Counter = 0
-DECLARE @id INT
 
-WHILE @Counter < 1000
+
+WHILE @Counter < 50
 BEGIN
-INSERT INTO prestamos (cliente_id,sucursal_id,empleado_id,tipo_prestamo_id,monto_otorgado,tasa_interes,plazo,fecha_inicio, fecha_vencimiento,created_at, created_by)
+INSERT INTO prestamos (cliente_id,sucursal_id,empleado_id,tipo_prestamo_id,monto_otorgado,tasa_interes,plazo,fecha_inicio,created_at, created_by)
 SELECT 
   c.id AS 'cliente_id',
   s.id AS 'sucursal_id',
-  ROUND(RAND()*140,0)+167 AS 'oficial_credito_id',
+  ROUND(RAND()*39,0) AS 'empleado_id',
   tp.id AS 'tipo_prestamo_id',
-  ep.id AS 'estado_prestamos_id',
-  ROUND(RAND() * 100000, 2) AS monto, -- Monto aleatorio
+  ROUND(RAND() * 100000, 2) AS 'monto otorgado', -- Monto aleatorio
   ROUND(RAND(),2) AS tasa_interes,-- Tasa de interes en decimales ,
   ROUND(RAND()*24,0)+12 AS 'plazo_meses', -- Plazo meses,
-  DATEADD(DAY, -ROUND(RAND() * 780,0), GETDATE()) AS 'fecha_inicia' -- Fecha de desembolso en los últimos 2 años
+  DATEADD(DAY, -ROUND(RAND() * 780,0), GETDATE()) AS 'fecha_inicio', -- Fecha de desembolso en los últimos 2 años
+  DATEADD(DAY, -ROUND(RAND() * 780,0), GETDATE()) AS 'Created_add', -- Fecha Creación en los ultimos 2 años
+  ROUND(RAND()*39,0) AS 'created_by'
 FROM clientes c
 	CROSS JOIN sucursales s
 	CROSS JOIN tipos_prestamo tp
-	CROSS JOIN estados_prestamo ep
 ORDER BY NEWID()
 OFFSET 0 ROWS
 FETCH NEXT 1 ROWS ONLY;
-	SET @id = SCOPE_IDENTITY()
-	EXEC SP_KV_INSERTAR_CUOTAS @id
     SET @Counter = @Counter + 1
 END
 
-SELECT*FROM personas_naturales;
+SELECT*FROM prestamos;

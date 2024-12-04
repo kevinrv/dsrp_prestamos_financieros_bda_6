@@ -153,3 +153,66 @@ FROM personas_naturales;
 
 SELECT*FROM vw_kv_listar_personas_naturales;
 
+-- COMBINACIÓN de Tablas
+
+SELECT 
+	p.sucursal_id,
+	s.nombres AS 'Sucursal',
+	COUNT(p.id) AS 'Num_prestamos'
+FROM prestamos p, sucursales s
+WHERE p.sucursal_id=s.id
+GROUP BY p.sucursal_id,s.nombres
+HAVING COUNT(p.id)>5
+ORDER BY 2 ASC;
+
+SELECT 
+	p.sucursal_id,
+	s.nombres AS 'Sucursal',
+	COUNT(p.id) AS 'Num_prestamos'
+FROM prestamos p
+INNER JOIN sucursales s ON p.sucursal_id=s.id
+GROUP BY p.sucursal_id,s.nombres
+HAVING COUNT(p.id)>5
+ORDER BY 2 ASC;
+
+--JOINS
+
+-- INNER JOIN 
+SELECT 
+	c.persona_id, 
+	c.tipo_persona AS 'tipo_cliente',
+	monto_otorgado,
+	fecha_inicio
+FROM clientes c
+INNER JOIN prestamos p ON p.cliente_id=c.id;
+
+-- LEFT JOIN
+SELECT 
+	c.persona_id, 
+	c.tipo_persona AS 'tipo_cliente',
+	monto_otorgado,
+	fecha_inicio
+FROM clientes c
+LEFT JOIN prestamos p ON p.cliente_id=c.id;
+
+-- RIGTH JOIN
+SELECT 
+	c.persona_id, 
+	c.tipo_persona AS 'tipo_cliente',
+	monto_otorgado,
+	fecha_inicio
+FROM prestamos p
+RIGHT JOIN clientes c ON p.cliente_id=c.id;
+
+-- FULL JOIN 
+
+SELECT 
+	c.persona_id, 
+	c.tipo_persona AS 'tipo_cliente',
+	monto_otorgado,
+	fecha_inicio
+FROM prestamos p
+CROSS JOIN clientes c;
+
+SELECT*FROM clientes;
+SELECT*FROM prestamos;
