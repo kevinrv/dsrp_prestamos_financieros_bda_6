@@ -4,11 +4,38 @@ Inserción de Datos Iniciales:
 Inserta al menos 3 registros en cada una de las tablas personas_naturales y personas_juridicas.
 Registra 5 sucursales con códigos únicos y direcciones ficticias.
 Crea 3 tipos de préstamo con descripciones.
-Consulta Básica:
+*/
+/*Consulta Básica:
 
 Obtén una lista de todos los clientes (personas naturales y jurídicas) con su tipo de persona (tipo_persona).
-Relación Cliente-Préstamo:
+*/
 
+SELECT*FROM clientes;
+SELECT*FROM personas_naturales;
+SELECT*FROM personas_juridicas;
+
+SELECT
+	c.tipo_persona AS 'Tipo Cliente',
+	numero_documento,
+	ISNULL(nt.nombres, '') + ' ' +ISNULL(nt.apellido_paterno, '')+' '+ISNULL(nt.apellido_materno,'') AS 'Cliente',
+	nt.email,
+	nt.celular AS 'Celular/Telefono',
+	nt.direccion
+FROM clientes c
+INNER JOIN personas_naturales nt ON nt.id=c.persona_id AND c.tipo_persona='Persona Natural'
+UNION
+SELECT
+	c.tipo_persona AS 'Tipo Cliente',
+	pj.numero_documento,
+	pj.razon_social 'Cliente',
+	pj.email,
+	pj.telefono AS 'Celular/Telefono',
+	pj.direccion
+FROM clientes c
+INNER JOIN personas_juridicas pj ON pj.id=c.persona_id AND c.tipo_persona='Persona Jurídica';
+
+
+/*Relación Cliente-Préstamo:
 Inserta al menos 5 registros en la tabla clientes, vinculando algunos con personas_naturales y otros con personas_juridicas.
 Registra 3 préstamos asignados a diferentes sucursales y empleados, especificando los tipos de préstamo.
 Pagos y Cuotas:
