@@ -216,3 +216,29 @@ CROSS JOIN clientes c;
 
 SELECT*FROM clientes;
 SELECT*FROM prestamos;
+
+
+-- Seleccionar la lista de empleados (nombre completo, dni, direccion, cod_empleado, cargo,
+--nombre completo del supervisor y sucursal al que pertenece) con sus supervisores
+
+
+-- Franklin
+SELECT*FROM empleados;
+
+SELECT 
+	e.id AS 'empleado_id',
+	CONCAT(pt.nombres,' ', pt.apellido_paterno,' ', pt.apellido_materno) AS 'Nombre completo',
+	pt.numero_documento AS 'DNI',
+	pt.direccion, 
+	e.codigo_empleado,
+	e.cargo,
+	s.id AS 'supervisor_id',
+	CONCAT(ps.nombres,' ', ps.apellido_paterno,' ', ps.apellido_materno) AS 'Supervisor'
+FROM empleados e 
+INNER JOIN personas_naturales pt ON pt.id = e.persona_id
+INNER JOIN empleados s ON s.id=e.supervisor_id
+INNER JOIN personas_naturales ps ON ps.id = s.persona_id
+INNER JOIN sucursales sc ON sc.id=e.sucursal_id;
+
+-- Joel 
+ SELECT CONCAT(pn.nombres, ' ', pn.apellido_paterno, ' ', pn.apellido_materno) AS 'nombre_completo',	   pn.numero_documento,	   pn.direccion,	   e.codigo_empleado,	   e.cargoFROM personas_naturales pnINNER JOIN empleados e ON e.persona_id = pn.id;
