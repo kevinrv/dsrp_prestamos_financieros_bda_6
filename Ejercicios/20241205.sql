@@ -42,6 +42,26 @@ Pagos y Cuotas:
 
 Para cada préstamo registrado, crea 3 cuotas con fechas de vencimiento consecutivas y estados alternados entre "Pendiente" y "Pagado".
 Registra pagos realizados para cubrir una o más cuotas y genera los correspondientes registros en detalle_pagos.
+*/
+SELECT*FROM clientes;
+SELECT*FROM prestamos WHERE plazo=12;
+SELECT*FROM cuotas;
+-- Actualizar fecha vencimiento en la tabla prestamos
+SELECT 
+fecha_inicio,
+plazo,
+fecha_vencimiento,
+DATEADD(MONTH,plazo,fecha_inicio) as 'fecha_vencimiento_calculado'
+FROM prestamos;
+
+UPDATE prestamos 
+	SET 
+		fecha_vencimiento = DATEADD(MONTH,plazo,fecha_inicio), 
+		updated_at = GETDATE(),
+		updated_by = '1';
+---
+
+/*
 Consultas Intermedias:
 
 Lista los préstamos activos, mostrando el cliente, el tipo de préstamo, y el monto otorgado.
