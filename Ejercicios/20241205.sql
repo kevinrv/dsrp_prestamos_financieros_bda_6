@@ -45,7 +45,60 @@ Registra pagos realizados para cubrir una o más cuotas y genera los correspondie
 */
 SELECT*FROM clientes;
 SELECT*FROM prestamos WHERE plazo=12;
+
+-- Inserción cuotas
+INSERT INTO cuotas(prestamo_id,numero_cuota,monto,fecha_vencimiento,estado,monto_pendiente) VALUES
+(3,1,'7044.89','2024-04-01','Pagado',0),
+(3,2,'7044.89','2024-05-01','Pagado',0),
+(3,3,'7044.89','2024-06-01','Pagado',0),
+(3,4,'7044.89','2024-07-01','Pagado',0),
+(3,5,'7044.89','2024-08-01','Pagado',0),
+(3,6,'7044.89','2024-09-01','Pagado',0),
+(3,7,'7044.89','2024-10-01','Pagado',0),
+(3,8,'7044.89','2024-11-01','Pagado',0),
+(3,9,'7044.89','2024-12-01','Pagado',0),
+(3,10,'7044.89','2025-01-01','Pendiente',7044.89),
+(3,11,'7044.89','2025-02-01','Pendiente',7044.89),
+(3,12,'7044.89','2025-03-01','Pendiente',7044.89);
+
+-- Inserción Pagos
+INSERT INTO pagos (codigo_operacion,fecha_pago, monto_abonado)
+VALUES
+('000000003','2024-04-01',14089.78),
+('000000004','2024-05-30',7044.89),
+('000000005','2024-06-01',7044.89),
+('000000006','2024-07-01',7044.89),
+('000000007','2024-08-31',7044.89),
+('000000008','2024-09-01',7044.89),
+('000000009','2024-10-30',7044.89),
+('000000010','2024-11-15',4044.89),
+('000000011','2024-12-01',3000.00);
+
+SELECT 7044.89*2
 SELECT*FROM cuotas;
+SELECT*FROM pagos;
+SELECT*FROM detalle_pagos;
+
+DELETE FROM pagos;
+
+INSERT INTO detalle_pagos (cuota_id,pago_id,monto_afectado)
+VALUES
+(1,22,7044.89),
+(2,22,7044.89),
+(3,23,7044.89),
+(4,24,7044.89),
+(5,25,7044.89),
+(6,26,7044.89),
+(7,27,7044.89),
+(8,28,7044.89),
+(9,29,4044.89),
+(9,30,3000.00);
+
+
+-- Calculo del valor de la cuota
+SELECT id,plazo,ROUND((monto_otorgado+monto_otorgado*tasa_interes)/plazo,2) AS 'monto_cuota'
+FROM prestamos WHERE plazo=12
+
 -- Actualizar fecha vencimiento en la tabla prestamos
 SELECT 
 fecha_inicio,
