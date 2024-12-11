@@ -135,21 +135,59 @@ WHERE p.fecha_vencimiento > GETDATE();
 
 /*
 2.Encuentra todas las cuotas pendientes, incluyendo el nombre del cliente y el código del préstamo.
+*/
+SELECT CASE			WHEN c.tipo_persona = 'Persona Natural' THEN CONCAT(pn.nombres, ' ', pn.apellido_paterno, ' ', pn.apellido_materno)			WHEN c.tipo_persona = 'Persona Jurídica' THEN pj.razon_social			ELSE 'desconocido'	   END AS 'nombre_cliente',	   p.id AS 'prestamo_id',	   ct.numero_cuota,	   ct.monto_pendiente,	   ct.fecha_vencimientoFROM prestamos p	INNER JOIN tipos_prestamo tp ON tp.id = p.tipo_prestamo_id	INNER JOIN clientes c ON c.id = p.cliente_id	LEFT JOIN personas_naturales pn ON pn.id = c.persona_id AND c.tipo_persona = 'Persona Natural'	LEFT JOIN personas_juridicas pj ON pj.id = c.persona_id AND c.tipo_persona = 'Persona Jurídica'	INNER JOIN cuotas ct ON ct.prestamo_id=p.idWHERE ct.estado='Pendiente';
 
+SELECT*FROM prestamos;
+/*
 
 
 3.Obtén el total abonado por cada cliente en sus pagos.
 */
 
+SELECT CASE			WHEN c.tipo_persona = 'Persona Natural' THEN CONCAT(pn.nombres, ' ', pn.apellido_paterno, ' ', pn.apellido_materno)			WHEN c.tipo_persona = 'Persona Jurídica' THEN pj.razon_social			ELSE 'desconocido'	   END AS 'nombre_cliente',	   SUM(monto_abonado) AS 'total_abonado'FROM prestamos p	INNER JOIN clientes c ON c.id = p.cliente_id	LEFT JOIN personas_naturales pn ON pn.id = c.persona_id AND c.tipo_persona = 'Persona Natural'	LEFT JOIN personas_juridicas pj ON pj.id = c.persona_id AND c.tipo_persona = 'Persona Jurídica'
+	INNER JOIN cuotas ct ON ct.prestamo_id=p.id
+	INNER JOIN detalle_pagos dp ON dp.cuota_id=ct.id
+	INNER JOIN pagos pg ON pg.id=dp.pago_id
+GROUP BY c.tipo_persona,pn.nombres, pn.apellido_paterno, pn.apellido_materno, pj.razon_social;
 
+-- SOLO CON EL CODIGO(id) DE CLIENTE
+SELECT c.id AS 'cliente_id',	   SUM(monto_abonado) AS 'total_abonado'FROM prestamos p	INNER JOIN clientes c ON c.id = p.cliente_id
+	INNER JOIN cuotas ct ON ct.prestamo_id=p.id
+	INNER JOIN detalle_pagos dp ON dp.cuota_id=ct.id
+	INNER JOIN pagos pg ON pg.id=dp.pago_id
+GROUP BY c.id;
 
 
 /*
 Actualizaciones y Eliminaciones:
 
-Actualiza la dirección de una sucursal.
-Marca como eliminados (llenando deleted_at y deleted_by) todos los préstamos cuyo plazo ya haya vencido.
-Elimina un cliente y todos los registros asociados (préstamos, cuotas, etc.).
+--Actualiza la dirección de una sucursal.
+*/
+SELECT*FROM sucursales;
+
+UPDATE sucursales SET direccion='Av. Alfonso Ugarte N° 205'
+WHERE id=2;
+/*
+--Marca como eliminados (llenando deleted_at y deleted_by) todos los préstamos cuyo plazo 
+ya haya vencido.
+*/
+UPDATE prestamos
+	SET 
+		deleted_at=GETDATE(),
+		deleted_by=1
+WHERE fecha_vencimiento<GETDATE() AND deleted_at IS NULL;
+
+SELECT*FROM prestamos WHERE deleted_at IS NOT NULL;
+
+
+
+
+
+/*
+--Elimina un cliente y todos los registros asociados (préstamos, cuotas, etc.).
+
+
 Estadísticas y Agregaciones:
 
 Calcula el promedio de los montos otorgados en los préstamos.
