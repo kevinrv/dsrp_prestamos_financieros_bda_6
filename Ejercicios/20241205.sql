@@ -186,13 +186,48 @@ SELECT*FROM prestamos WHERE deleted_at IS NOT NULL;
 
 /*
 --Elimina un cliente y todos los registros asociados (préstamos, cuotas, etc.).
+*/
+DELETE FROM clientes WHERE id=129;
+-- Eliminando detalles opagos del cliente_id 129
+DELETE dp
+FROM detalle_pagos dp
+INNER JOIN cuotas ct ON ct.id=dp.cuota_id
+INNER JOIN prestamos p ON p.id=ct.prestamo_id
+WHERE p.cliente_id=129;
+--Eliminando pagos del cliente_id 129
+DELETE FROM pagos
+WHERE id NOT IN  (SELECT pago_id FROM detalle_pagos);
 
+-- Eliminamos cuotas del cliente_id 129
+
+DELETE ct
+FROM cuotas ct
+INNER JOIN prestamos p ON p.id=ct.prestamo_id
+WHERE p.cliente_id=129;
+
+-- Eliminamos Prestamos del cliente_id 129
+
+DELETE FROM prestamos WHERE cliente_id=129
+
+-- Eliminamos el cliente 129
+
+DELETE FROM clientes WHERE id=129;
+
+/*
 
 Estadísticas y Agregaciones:
+*/
+-- Calcula el promedio de los montos otorgados en los préstamos.
+SELECT 	AVG(monto_otorgado) AS 'monto_otorgado_promedio'FROM prestamos;
+-- Determina cuál sucursal ha otorgado el mayor número de préstamos.
+SELECT s.nombres,	  COUNT(p.sucursal_id) AS 'cantidad_prestamos'INTO #t01 FROM prestamos pINNER JOIN sucursales s ON s.id = p.sucursal_idGROUP BY s.nombresORDER BY COUNT(sucursal_id) DESC;
 
-Calcula el promedio de los montos otorgados en los préstamos.
-Determina cuál sucursal ha otorgado el mayor número de préstamos.
-Genera un reporte con el total de intereses generados por los préstamos.
+SELECT nombres, cantidad_prestamos FROM #t01
+WHERE cantidad_prestamos IN (SELECT max(cantidad_prestamos) FROM #t01);
+
+-- Genera un reporte con el total de intereses generados por los préstamos.
+/*
+
 Validaciones:
 
 Intenta insertar un registro en clientes con un tipo_persona no permitido y verifica la restricción CHECK.
