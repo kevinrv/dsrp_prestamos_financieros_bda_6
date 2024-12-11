@@ -1,3 +1,4 @@
+USE dsrp_prestamos_financieros_6;
 /* Ejercicios Propuestos:
 Inserción de Datos Iniciales:
 
@@ -117,9 +118,33 @@ UPDATE prestamos
 /*
 Consultas Intermedias:
 
-Lista los préstamos activos, mostrando el cliente, el tipo de préstamo, y el monto otorgado.
-Encuentra todas las cuotas pendientes, incluyendo el nombre del cliente y el código del préstamo.
-Obtén el total abonado por cada cliente en sus pagos.
+1.Lista los préstamos activos, mostrando el cliente, el tipo de préstamo, y el monto otorgado.
+*/
+SELECT*FROM prestamos;
+-- JOEL
+SELECT CASE			WHEN c.tipo_persona = 'Persona Natural' THEN CONCAT(pn.nombres, ' ', pn.apellido_paterno, ' ', pn.apellido_materno)			WHEN c.tipo_persona = 'Persona Jurídica' THEN pj.razon_social			ELSE 'desconocido'	   END AS 'nombre_cliente',	   tp.nombre AS 'tipo_prestamo',	   p.monto_otorgadoFROM prestamos p	INNER JOIN tipos_prestamo tp ON tp.id = p.tipo_prestamo_id	INNER JOIN clientes c ON c.id = p.cliente_id	LEFT JOIN personas_naturales pn ON pn.id = c.persona_id AND c.tipo_persona = 'Persona Natural'	LEFT JOIN personas_juridicas pj ON pj.id = c.persona_id AND c.tipo_persona = 'Persona Jurídica'WHERE p.fecha_vencimiento > GETDATE();
+
+-- FORMA 2
+
+SELECT CONCAT(pn.nombres, ' ', pn.apellido_paterno, ' ', pn.apellido_materno) AS 'Cliente',	   tp.nombre AS 'tipo_prestamo',	   p.monto_otorgadoFROM prestamos p	INNER JOIN tipos_prestamo tp ON tp.id = p.tipo_prestamo_id	INNER JOIN clientes c ON c.id = p.cliente_id	INNER JOIN personas_naturales pn ON pn.id = c.persona_id AND c.tipo_persona = 'Persona Natural'
+WHERE p.fecha_vencimiento > GETDATE()
+UNION
+SELECT pj.razon_social AS 'Cliente',	   tp.nombre AS 'tipo_prestamo',	   p.monto_otorgadoFROM prestamos p	INNER JOIN tipos_prestamo tp ON tp.id = p.tipo_prestamo_id	INNER JOIN clientes c ON c.id = p.cliente_id	INNER JOIN personas_juridicas pj ON pj.id = c.persona_id AND c.tipo_persona = 'Persona Jurídica'
+WHERE p.fecha_vencimiento > GETDATE();
+
+
+/*
+2.Encuentra todas las cuotas pendientes, incluyendo el nombre del cliente y el código del préstamo.
+
+
+
+3.Obtén el total abonado por cada cliente en sus pagos.
+*/
+
+
+
+
+/*
 Actualizaciones y Eliminaciones:
 
 Actualiza la dirección de una sucursal.
