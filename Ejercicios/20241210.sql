@@ -10,6 +10,46 @@ El empleado que gestionó el préstamo.
 El tipo de préstamo.
 El monto total otorgado y la tasa de interés.*/
 
+SELECT 
+	p.id AS 'prestamo_id',
+	c.tipo_persona AS 'Tipo_cliente',
+	CONCAT(pt.nombres,' ',pt.apellido_paterno,' ',pt.apellido_materno) AS 'cliente',
+	s.nombres AS 'sucursal',
+	e.codigo_empleado,
+	CONCAT(pe.nombres,' ',pe.apellido_paterno,' ',pe.apellido_materno) AS 'Empleado',
+	tp.nombre AS 'Tipo_prestamo',
+	p.monto_otorgado,
+	p.tasa_interes,
+	p.plazo
+FROM prestamos p
+	INNER JOIN clientes c ON c.id=p.cliente_id
+	INNER JOIN personas_naturales pt ON pt.id=c.persona_id AND c.tipo_persona='Persona Natural'
+	INNER JOIN sucursales s ON p.sucursal_id=s.id
+	INNER JOIN empleados e ON e.id=p.empleado_id
+	INNER JOIN personas_naturales pe ON pe.id=e.persona_id
+	INNER JOIN tipos_prestamo tp ON tp.id=p.tipo_prestamo_id
+UNION
+SELECT 
+	p.id AS 'prestamo_id',
+	c.tipo_persona AS 'Tipo_cliente',
+	pj.razon_social AS 'cliente',
+	s.nombres AS 'sucursal',
+	e.codigo_empleado,
+	CONCAT(pe.nombres,' ',pe.apellido_paterno,' ',pe.apellido_materno) AS 'Empleado',
+	tp.nombre AS 'Tipo_prestamo',
+	p.monto_otorgado,
+	p.tasa_interes,
+	p.plazo
+FROM prestamos p
+	INNER JOIN clientes c ON c.id=p.cliente_id
+	INNER JOIN personas_juridicas pj ON pj.id=c.persona_id AND c.tipo_persona='Persona Jurídica'
+	INNER JOIN sucursales s ON p.sucursal_id=s.id
+	INNER JOIN empleados e ON e.id=p.empleado_id
+	INNER JOIN personas_naturales pe ON pe.id=e.persona_id
+	INNER JOIN tipos_prestamo tp ON tp.id=p.tipo_prestamo_id
+ORDER BY 3;
+
+SELECT*FROM cuotas;
 /*
 Cuotas Pendientes:
 
@@ -18,6 +58,34 @@ El cliente.
 El préstamo relacionado.
 El número de cuota y el monto pendiente.
 */
+
+SELECT 
+	p.id AS 'prestamo_id',
+	c.tipo_persona AS 'Tipo_cliente',
+	CONCAT(pt.nombres,' ',pt.apellido_paterno,' ',pt.apellido_materno) AS 'cliente',
+	ct.numero_cuota,
+	ct.monto_pendiente,
+	ct.fecha_vencimiento
+FROM prestamos p
+	INNER JOIN clientes c ON c.id=p.cliente_id
+	INNER JOIN personas_naturales pt ON pt.id=c.persona_id AND c.tipo_persona='Persona Natural'
+	INNER JOIN cuotas ct ON ct.prestamo_id=p.id
+WHERE estado='Vencido'
+UNION
+SELECT 
+	p.id AS 'prestamo_id',
+	c.tipo_persona AS 'Tipo_cliente',
+	pj.razon_social AS 'cliente',
+	ct.numero_cuota,
+	ct.monto_pendiente,
+	ct.fecha_vencimiento
+FROM prestamos p
+	INNER JOIN clientes c ON c.id=p.cliente_id
+	INNER JOIN personas_juridicas pj ON pj.id=c.persona_id AND c.tipo_persona='Persona Jurídica'
+	INNER JOIN cuotas ct ON ct.prestamo_id=p.id
+WHERE estado='Vencido'
+ORDER BY 3;
+
 
 
 /*
