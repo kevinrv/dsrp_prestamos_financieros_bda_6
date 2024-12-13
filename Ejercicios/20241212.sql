@@ -95,4 +95,82 @@ WHERE fecha_vencimiento<GETDATE();
 
 SELECT*FROM cuotas WHERE estado='Vencido';
 
--- Alaizando los pagos
+-- Analizando los pagos
+SELECT*FROM pagos;
+SELECT*FROM detalle_pagos;
+SELECT*FROM cuotas WHERE id IN (1,2,3,4);
+
+DELETE FROM detalle_pagos;
+DELETE FROM pagos;
+
+
+-- Insertamos el pago de la cuota de id=1
+DECLARE @cuota_id INT
+SET @cuota_id=1
+DECLARE @monto_pagar MONEY
+DECLARE @fecha_pago DATETIME
+SELECT @monto_pagar=monto_pendiente,@fecha_pago=fecha_vencimiento FROM cuotas WHERE id=@cuota_id;
+--- Insertando pago
+INSERT INTO pagos (codigo_operacion,fecha_pago,monto_abonado)
+VALUES (ROUND(RAND()*1000000,0),@fecha_pago,@monto_pagar);
+
+INSERT INTO detalle_pagos (cuota_id,pago_id, monto_afectado)
+VALUES(@cuota_id,SCOPE_IDENTITY(),@monto_pagar);
+
+--Actualizar cuotas
+UPDATE cuotas SET estado='Pagado', monto_pendiente=monto_pendiente-@monto_pagar
+WHERE id=@cuota_id;
+
+-- Procedimiento almacenado para registrar pagos v1
+
+CREATE PROCEDURE sp_kv_registra_pagos_cuota 
+	@cuota_id INT
+AS
+	SET NOCOUNT ON;
+	DECLARE @monto_pagar MONEY
+	DECLARE @fecha_pago DATETIME
+	SELECT @monto_pagar=monto_pendiente,@fecha_pago=fecha_vencimiento FROM cuotas WHERE id=@cuota_id;
+	--- Insertando pago
+	INSERT INTO pagos (codigo_operacion,fecha_pago,monto_abonado)
+	VALUES (ROUND(RAND()*1000000,0),@fecha_pago,@monto_pagar);
+
+	INSERT INTO detalle_pagos (cuota_id,pago_id, monto_afectado)
+	VALUES(@cuota_id,SCOPE_IDENTITY(),@monto_pagar);
+
+	--Actualizar cuotas
+	UPDATE cuotas SET estado='Pagado', monto_pendiente=monto_pendiente-@monto_pagar
+	WHERE id=@cuota_id;
+
+GO
+
+EXEC dbo.sp_kv_registra_pagos_cuota 3
+
+--v2
+CREATE PROCEDURE sp_kv_registra_pagos_cuota_v2
+	@cuota_id INT,
+	@monto_ingresado MONEY
+AS
+	SET NOCOUNT ON;
+	DECLARE @monto_pagar MONEY
+	DECLARE @fecha_pago DATETIME
+	SELECT @monto_pagar=monto_pendiente, @fecha_pago=fecha_vencimiento FROM cuotas WHERE id=@cuota_id;
+	--- Insertando pago
+	INSERT INTO pagos (codigo_operacion,fecha_pago,monto_abonado)
+	VALUES (ROUND(RAND()*1000000,0),@fecha_pago,@monto_ingresado);
+
+	INSERT INTO detalle_pagos (cuota_id,pago_id, monto_afectado)
+	VALUES(@cuota_id,SCOPE_IDENTITY(),@monto_ingresado);
+
+	--Actualizar cuotas
+	IF @monto_pagar=@monto_ingresado BEGIN
+		UPDATE cuotas SET estado='Pagado', monto_pendiente=monto_pendiente-@monto_ingresado
+		WHERE id=@cuota_id;
+	END
+	ELSE BEGIN 
+		UPDATE cuotas SET estado='Pendiente', monto_pendiente=monto_pendiente-@monto_ingresado
+		WHERE id=@cuota_id;
+	END
+GO
+
+EXEC dbo.sp_kv_registra_pagos_cuota_v2 '4','500.00';
+
