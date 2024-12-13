@@ -94,11 +94,42 @@ Reporte de Saldos por Préstamo:
 Calcula el monto pendiente total de cada préstamo (suma de monto_pendiente de las cuotas relacionadas) y clasifícalos como:
 "Al día" si no tienen cuotas vencidas.
 "En mora" si tienen al menos una cuota vencida.*/
+SELECT*FROM cuotas;
+
+SELECT 
+	p.id, 
+	SUM(monto_pendiente) AS 'Monto_pendiente_total',
+	CASE WHEN c.estado != 'Vencido' THEN 'Al día'
+	ELSE 'En mora' END AS 'estado_prestamo'
+FROM prestamos p
+INNER JOIN cuotas c ON c.prestamo_id=p.id
+GROUP BY p.id,c.estado
+ORDER BY 2 DESC;
 
 /*
 Pagos por Cliente:
 
-Diseña una consulta que liste los clientes y el total de dinero que han abonado hasta la fecha, incluyendo aquellos que no han realizado ningún pago.
+Diseña una consulta que liste los clientes y el total de dinero que han abonado hasta
+la fecha, incluyendo aquellos que no han realizado ningún pago.
+*/
+SELECT
+	CONCAT(pt.nombres,' ',pt.apellido_paterno,' ',pt.apellido_materno) AS 'cliente',
+	CASE WHEN dp.id IS NULL THEN 0
+	ELSE SUM(dp.monto_afectado) END AS 'total_abonado'
+FROM clientes cl
+	INNER JOIN personas_naturales pt ON pt.id=cl.persona_id AND cl.tipo_persona='Persona Natural'
+	INNER JOIN prestamos p ON p.cliente_id=cl.id
+	INNER JOIN cuotas ct ON ct.prestamo_id=p.id
+	LEFT JOIN detalle_pagos dp ON dp.cuota_id=ct.id
+GROUP BY 
+	pt.nombres,
+	pt.apellido_paterno,
+	pt.apellido_materno,
+	dp.id;
+
+
+
+/*
 Validación de Restricciones:
 
 Intenta insertar un préstamo cuyo tipo_prestamo_id no exista en la tabla tipos_prestamo y analiza el error generado.
