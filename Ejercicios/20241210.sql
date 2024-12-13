@@ -8,18 +8,26 @@ El cliente (nombre o razón social según corresponda).
 La sucursal.
 El empleado que gestionó el préstamo.
 El tipo de préstamo.
-El monto total otorgado y la tasa de interés.
+El monto total otorgado y la tasa de interés.*/
+
+/*
 Cuotas Pendientes:
 
 Crea una consulta para listar las cuotas vencidas que no han sido completamente abonadas, mostrando:
 El cliente.
 El préstamo relacionado.
 El número de cuota y el monto pendiente.
+*/
+
+
+/*
 Reporte de Saldos por Préstamo:
 
 Calcula el monto pendiente total de cada préstamo (suma de monto_pendiente de las cuotas relacionadas) y clasifícalos como:
 "Al día" si no tienen cuotas vencidas.
-"En mora" si tienen al menos una cuota vencida.
+"En mora" si tienen al menos una cuota vencida.*/
+
+/*
 Pagos por Cliente:
 
 Diseña una consulta que liste los clientes y el total de dinero que han abonado hasta la fecha, incluyendo aquellos que no han realizado ningún pago.

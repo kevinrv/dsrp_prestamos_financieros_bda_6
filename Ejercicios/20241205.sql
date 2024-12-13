@@ -226,16 +226,75 @@ SELECT nombres, cantidad_prestamos FROM #t01
 WHERE cantidad_prestamos IN (SELECT max(cantidad_prestamos) FROM #t01);
 
 -- Genera un reporte con el total de intereses generados por los préstamos.
+SELECT 
+	id AS 'prestamo_id',
+	monto_otorgado,
+	tasa_interes*monto_otorgado AS 'interes_a_generar',
+	CASE WHEN deleted_at IS NOT NULL THEN 'Prestamo Vencido' ELSE 'Prestamo Activo' END AS 'Estado'
+FROM prestamos;
+
+SELECT SUM(tasa_interes*monto_otorgado) FROM prestamos WHERE deleted_at IS NOT NULL;
+
 /*
 
 Validaciones:
 
-Intenta insertar un registro en clientes con un tipo_persona no permitido y verifica la restricción CHECK.
+
+Intenta insertar un registro en clientes con un tipo_persona no permitido y 
+verifica la restricción CHECK.
+
 Inserta un empleado con un supervisor_id que no existe y observa el resultado.
+
+*//*
+
+Función para Obtener Nombre Completo:
+
+Crea una función que reciba los nombres, apellido paterno y materno de una persona y devuelva su nombre completo en el formato:
+Apellido Paterno Apellido Materno, Nombres.
+*/
+
+ALTER FUNCTION FN_KV_RETORNA_NOMBRE_COMPLETO(@nombres VARCHAR(255),@app VARCHAR(255),@apm VARCHAR(255))
+
+RETURNS VARCHAR(1000)
+AS
+BEGIN
+DECLARE @nombre_completo VARCHAR (1000);
+SELECT @nombre_completo=CONCAT(@app,' ',@apm,' ',@nombres);
+
+RETURN @nombre_completo;
+END
+
+SELECT dbo.FN_KV_RETORNA_NOMBRE_COMPLETO('Kevin','Rivera','Vergaray')
+
+SELECT CASE			WHEN c.tipo_persona = 'Persona Natural' THEN dbo.FN_KV_RETORNA_NOMBRE_COMPLETO(pn.nombres, pn.apellido_paterno, pn.apellido_materno)			WHEN c.tipo_persona = 'Persona Jurídica' THEN pj.razon_social			ELSE 'desconocido'	   END AS 'nombre_cliente',	   tp.nombre AS 'tipo_prestamo',	   p.monto_otorgadoFROM prestamos p	INNER JOIN tipos_prestamo tp ON tp.id = p.tipo_prestamo_id	INNER JOIN clientes c ON c.id = p.cliente_id	LEFT JOIN personas_naturales pn ON pn.id = c.persona_id AND c.tipo_persona = 'Persona Natural'	LEFT JOIN personas_juridicas pj ON pj.id = c.persona_id AND c.tipo_persona = 'Persona Jurídica'WHERE p.fecha_vencimiento > GETDATE();
+
+/*
 Procedimientos Almacenados:
 
 Crea un procedimiento almacenado que registre automáticamente un pago y actualice las cuotas afectadas.
+
 Diseña un procedimiento para generar un reporte con los préstamos activos de una sucursal específica.
+*/
+CREATE PROCEDURE SP_KV_PRESTAMOS_ACTIVOS_SUCURSAL 
+	@id_sucursal INT
+AS
+	SET NOCOUNT ON;
+	SELECT 
+		id AS 'prestamo_id',
+		monto_otorgado,
+		plazo,
+		tasa_interes,
+		fecha_inicio,
+		fecha_vencimiento
+	FROM prestamos
+	WHERE sucursal_id=@id_sucursal AND deleted_at IS NULL;
+GO
+
+EXEC SP_KV_PRESTAMOS_ACTIVOS_SUCURSAL 2;
+
+SELECT*FROM sucursales;
+
+/*
 Consultas Avanzadas:
 
 Encuentra todos los préstamos con cuotas vencidas, incluyendo el nombre del cliente y el monto pendiente.
