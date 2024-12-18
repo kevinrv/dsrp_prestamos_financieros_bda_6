@@ -187,7 +187,7 @@ DECLARE @Counter INT
 SET @Counter = 0
 
 
-WHILE @Counter < 50
+WHILE @Counter < 5
 BEGIN
 INSERT INTO prestamos (cliente_id,sucursal_id,empleado_id,tipo_prestamo_id,monto_otorgado,tasa_interes,plazo,fecha_inicio,created_at, created_by)
 SELECT 

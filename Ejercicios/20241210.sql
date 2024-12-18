@@ -311,7 +311,69 @@ DEALLOCATE cr_kv_imprime_supervisores
 
 Auditoría de Cambios:
 
-Crea una tabla de auditoría para registrar cualquier cambio en la tabla prestamos (incluyendo actualizaciones y eliminaciones), con:
+Crea una tabla de auditoría para registrar cualquier cambio en la tabla prestamos
+(incluyendo actualizaciones y eliminaciones), con:
 El ID del préstamo afectado.
 El tipo de cambio (INSERT, UPDATE, DELETE).
 La fecha y el usuario que realizó el cambio.*/
+
+-- Creamos la tabla auditoria_prestamos
+
+CREATE TABLE audit_prestamos (
+id INT PRIMARY KEY IDENTITY (1,1),
+prestamo_id INT NOT NULL,
+tipo_cambio VARCHAR(50) NOT NULL,
+fecha_cambio DATETIME DEFAULT GETDATE(),
+usuario VARCHAR(100) NOT NULL
+);
+
+GO
+
+SELECT SYSTEM_USER;
+
+CREATE TRIGGER trg_kv_auditorias_prestamos
+ON prestamos
+AFTER INSERT, UPDATE, DELETE
+AS 
+BEGIN 
+	SET NOCOUNT ON;
+
+	DECLARE @user_change VARCHAR(100);
+	SET @user_change = SYSTEM_USER;
+
+	--INSERT
+
+	IF EXISTS (SELECT 1 FROM inserted) AND NOT EXISTS (SELECT 1 FROM deleted)
+	BEGIN
+		INSERT INTO audit_prestamos (prestamo_id,tipo_cambio,usuario)
+		SELECT id,'INSERT',@user_change
+		FROM inserted;
+	END;
+
+	--DELETE
+
+	IF NOT EXISTS (SELECT 1 FROM inserted) AND EXISTS (SELECT 1 FROM deleted)
+	BEGIN
+		INSERT INTO audit_prestamos (prestamo_id,tipo_cambio,usuario)
+		SELECT id,'DELETE',@user_change
+		FROM deleted;
+	END;
+
+	--UPDATE
+	IF EXISTS (SELECT 1 FROM inserted) AND EXISTS (SELECT 1 FROM deleted)
+	BEGIN
+	INSERT INTO audit_prestamos (prestamo_id,tipo_cambio,usuario)
+	SELECT id,'UPDATE',@user_change
+		FROM inserted;
+	END;
+END;
+GO
+
+SELECT*FROM prestamos WHERE id=104;
+
+SELECT*FROM audit_prestamos;
+
+DELETE FROM prestamos WHERE id=105;
+
+UPDATE prestamos SET monto_otorgado=10000
+WHERE id=104;
