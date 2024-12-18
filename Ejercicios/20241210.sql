@@ -219,12 +219,96 @@ El monto total otorgado.
 Optimización de Cuotas con Pagos Parciales:
 
 Diseña un procedimiento almacenado que redistribuya automáticamente pagos parciales de una cuota en cuotas futuras cuando el monto abonado supera el saldo pendiente de la cuota actual.
-Consulta Jerárquica de Empleados:
+
+Consulta Jerárquica de Empleados: Resolver con un cursor
 
 Lista los empleados junto con sus supervisores directos y, si aplica, el supervisor del supervisor, mostrando:
 Nombre del empleado.
-Nombre del supervisor directo.
-Nombre del supervisor superior.
+Nombre del supervisor directo.*/
+
+SELECT*FROM empleados;
+
+UPDATE empleados SET supervisor_id = NULL, sucursal_id = NULL
+WHERE id=11;
+-- cursor imprime cod_empleado
+DECLARE @empleado AS varchar(255)
+DECLARE @cod_empleado AS varchar(255)
+DECLARE cr_kv_imprime_cod_empleado CURSOR FOR 
+	SELECT 
+		CONCAT(pt.nombres,' ',pt.apellido_paterno,' ',pt.apellido_materno) AS 'empleado',
+		e.codigo_empleado AS 'cod_empleado'
+	FROM empleados e
+	INNER JOIN personas_naturales pt ON pt.id=e.persona_id
+OPEN cr_kv_imprime_cod_empleado
+FETCH NEXT FROM cr_kv_imprime_cod_empleado INTO @empleado, @cod_empleado
+WHILE @@fetch_status = 0
+BEGIN
+    PRINT 'El empleado(a) '+@empleado+' tiene el código: ' +@cod_empleado
+    FETCH NEXT FROM cr_kv_imprime_cod_empleado INTO @empleado,@cod_empleado
+END
+CLOSE cr_kv_imprime_cod_empleado
+DEALLOCATE cr_kv_imprime_cod_empleado
+
+-- Cursor para listar a los supervisores con sus respectivos empleados a cargo
+
+DECLARE @supervisor AS varchar(255),  @message VARCHAR(80),
+		@cod_supervisor AS varchar(255),
+		@empleado AS varchar(255), @cod_empleado AS varchar(255), @id_supervisor AS INT
+
+PRINT '-------- Reporte de Supervisores con sus empleados a Cargo --------';
+-- Cursor principal para listar los supervisores
+DECLARE cr_kv_imprime_supervisores CURSOR FOR 
+	SELECT 
+		CONCAT(pt.nombres,' ',pt.apellido_paterno,' ',pt.apellido_materno) AS 'supervisor',
+		e.codigo_empleado AS 'cod_supervisor',
+		e.id AS 'id_supervisor'
+	FROM empleados e
+	INNER JOIN personas_naturales pt ON pt.id=e.persona_id
+	WHERE supervisor_id IS NULL
+OPEN cr_kv_imprime_supervisores
+FETCH NEXT FROM cr_kv_imprime_supervisores INTO @supervisor, @cod_supervisor, @id_supervisor
+WHILE @@fetch_status = 0
+BEGIN
+    PRINT ' '
+    SELECT @message = '----- Empleados del  Supervisor ' +
+        @supervisor+' ('+@cod_supervisor+')'
+    PRINT @message
+    -- Cursor para listas empleados a cargo de cada supervisor
+	DECLARE cr_kv_imprime_empleados CURSOR FOR 
+	SELECT 
+		CONCAT(pt.nombres,' ',pt.apellido_paterno,' ',pt.apellido_materno) AS 'empleado',
+		e.codigo_empleado AS 'cod_empleado'
+	FROM empleados e
+	INNER JOIN personas_naturales pt ON pt.id=e.persona_id
+	WHERE supervisor_id=@id_supervisor
+	OPEN cr_kv_imprime_empleados
+	FETCH NEXT FROM cr_kv_imprime_empleados INTO @empleado,@cod_empleado
+
+    IF @@FETCH_STATUS <> 0
+        PRINT '         Por el momento no cuenta con empleados a cargo.'
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+
+        SELECT @message = '         ' + @empleado + ' ('+@cod_empleado+')'
+        PRINT @message
+        FETCH NEXT FROM cr_kv_imprime_empleados INTO @empleado,@cod_empleado
+        END
+
+    CLOSE cr_kv_imprime_empleados
+    DEALLOCATE cr_kv_imprime_empleados
+
+	---
+    FETCH NEXT FROM cr_kv_imprime_supervisores 
+	INTO @supervisor, @cod_supervisor,@id_supervisor
+END
+CLOSE cr_kv_imprime_supervisores
+DEALLOCATE cr_kv_imprime_supervisores
+
+/*
+
+
+
 Auditoría de Cambios:
 
 Crea una tabla de auditoría para registrar cualquier cambio en la tabla prestamos (incluyendo actualizaciones y eliminaciones), con:
