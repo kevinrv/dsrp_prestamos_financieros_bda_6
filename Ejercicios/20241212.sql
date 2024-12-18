@@ -80,7 +80,7 @@ SELECT NEWID();
 DECLARE @num_prestamos INT
 SELECT @num_prestamos=COUNT(*) FROM prestamos;
 DECLARE @Counter1 INT
-	SET @Counter1 = 3
+	SET @Counter1 = 104
 
 	WHILE @Counter1 <= @num_prestamos
 	BEGIN
@@ -92,6 +92,8 @@ DECLARE @Counter1 INT
 
 UPDATE cuotas SET estado='Vencido'
 WHERE fecha_vencimiento<GETDATE();
+
+UPDATE prestamos SET fecha_vencimiento=DATEADD(MONTH,plazo,fecha_inicio);
 
 SELECT*FROM cuotas WHERE estado='Vencido';
 

@@ -146,9 +146,33 @@ Nombre o Razón Social del cliente.
 Cantidad total de préstamos activos.
 Monto total otorgado en todos sus préstamos.
 Monto total pendiente.
+
 Subconsultas Correlacionadas:
 
 Encuentra los empleados que han gestionado al menos un préstamo en cada sucursal.
+*/
+
+SELECT 
+	e.codigo_empleado, 
+	COUNT(DISTINCT s.id) AS 'num_suscursales'
+FROM prestamos p
+	INNER JOIN sucursales s ON s.id=p.sucursal_id
+	INNER JOIN empleados e ON e.id=p.empleado_id
+GROUP BY e.codigo_empleado
+HAVING COUNT(DISTINCT s.id)=(SELECT COUNT(*)  FROM sucursales)
+ORDER BY 1,2;
+
+
+
+-- Joel
+
+SELECT t2.persona_id,	   CONCAT(pn.nombres, ' ', pn.apellido_paterno, ' ', pn.apellido_materno) AS 'nombre_empleados'FROM (		SELECT *,			   ROW_NUMBER() OVER (PARTITION BY t1.persona_id ORDER BY t1.persona_id) AS fila		FROM (				SELECT DISTINCT e.persona_id, p.sucursal_id				FROM empleados e				INNER JOIN prestamos p ON p.empleado_id = e.id		) AS t1	 ) AS t2INNER JOIN personas_naturales pn ON pn.id = t2.persona_id WHERE t2.fila = 16;
+
+SELECT*FROM sucursales;
+
+/*
+
+
 Pagos Detallados por Cuotas:
 
 Lista todas las cuotas pagadas parcialmente, mostrando:
