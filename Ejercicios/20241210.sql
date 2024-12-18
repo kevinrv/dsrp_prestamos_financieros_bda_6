@@ -1,3 +1,5 @@
+USE dsrp_prestamos_financieros_6;
+GO
 /* 
 Ejercicios Propuestos de Nivel Intermedio y Avanzado
 Intermedio
@@ -167,7 +169,46 @@ Disparador para Pagos:
 Crea un disparador (TRIGGER) que:
 Se active al insertar un nuevo pago en la tabla pagos.
 Actualice automáticamente el monto_pendiente en la tabla cuotas.
-Cambie el estado de la cuota a "Pagado" si su saldo pendiente llega a cero.
+Cambie el estado de la cuota a "Pagado" si su saldo pendiente llega a cero.*/
+
+SELECT*FROM cuotas WHERE id=110;
+SELECT*FROM detalle_pagos;
+SELECT*FROM pagos;
+UPDATE cuotas set monto_pendiente=0
+WHERE monto_pendiente<0;
+
+DROP TRIGGER trg_kv_actualizar_cuotas;
+CREATE TRIGGER trg_kv_actualizar_cuotas
+ON detalle_pagos
+AFTER INSERT
+AS
+BEGIN 
+	SET NOCOUNT ON;
+	UPDATE c
+	SET c.monto_pendiente=c.monto_pendiente-dp.monto_afectado,
+		c.estado= CASE 
+			WHEN c.monto_pendiente-dp.monto_afectado<=0 THEN  'Pagado'
+			ELSE c.estado END
+	FROM cuotas c
+	INNER JOIN detalle_pagos dp ON dp.cuota_id=c.id
+	INNER JOIN inserted i ON i.id=dp.id;
+	PRINT 'Se inserto correctamente el pago'
+END;
+GO
+
+
+
+
+
+INSERT INTO pagos VALUES('11231313', GETDATE(),'988.1047')--Pago cuota id=110
+INSERT INTO detalle_pagos VALUES(110,42,'988.1047');
+
+EXEC dbo.sp_kv_registra_pagos_cuota_v3 '41','6046.24'
+
+SELECT*FROM cuotas WHERE id=41;
+/*
+
+
 Reporte de Eficiencia de Sucursales:
 
 Genera un reporte que muestre:

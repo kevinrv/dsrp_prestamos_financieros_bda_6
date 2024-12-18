@@ -143,7 +143,7 @@ AS
 
 GO
 
-EXEC dbo.sp_kv_registra_pagos_cuota 3
+EXEC dbo.sp_kv_registra_pagos_cuota 1000
 
 --v2
 CREATE PROCEDURE sp_kv_registra_pagos_cuota_v2
@@ -172,5 +172,5 @@ AS
 	END
 GO
 
-EXEC dbo.sp_kv_registra_pagos_cuota_v2 '4','500.00';
+EXEC dbo.sp_kv_registra_pagos_cuota_v2 '142','500.00';
 
